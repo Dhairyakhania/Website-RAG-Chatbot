@@ -51,22 +51,27 @@ export default function ChatWidget() {
       body: JSON.stringify({ message: userText }),
     });
 
-    const reader = res.body?.getReader();
-    if (!reader) {
+    /* 🔴 SAFETY: handle non-stream responses */
+    if (!res.body) {
+      const text = await res.text();
+      setMessages((prev) => [...prev, { role: "assistant", content: text }]);
       setIsTyping(false);
       return;
     }
 
-    // 2️⃣ Add assistant placeholder and capture index
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    // 2️⃣ Add assistant placeholder
     let assistantIndex = -1;
     setMessages((prev) => {
       assistantIndex = prev.length;
       return [...prev, { role: "assistant", content: "" }];
     });
 
-    const decoder = new TextDecoder();
     let assistantText = "";
 
+    // 3️⃣ Stream response
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
@@ -84,15 +89,26 @@ export default function ChatWidget() {
         }
         return updated;
       });
-}
+    }
 
+    /* 🟢 FINAL FALLBACK (CRITICAL FIX) */
+    if (!assistantText.trim()) {
+      const fallbackText = await res.text();
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[assistantIndex] = {
+          role: "assistant",
+          content: fallbackText,
+        };
+        return updated;
+      });
+    }
 
     setIsTyping(false);
   }
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {/* Chat Window */}
       {open && (
         <div className="w-[360px] max-w-[90vw] h-[500px] glass rounded-2xl shadow-2xl flex flex-col animate-chat-open">
           {/* Header */}
@@ -110,7 +126,6 @@ export default function ChatWidget() {
                 </p>
               </div>
             </div>
-
             <button
               onClick={() => setOpen(false)}
               className="text-slate-400 hover:text-white transition"
@@ -172,7 +187,6 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* Floating Button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
