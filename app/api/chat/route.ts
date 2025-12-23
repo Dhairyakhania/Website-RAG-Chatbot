@@ -5,7 +5,7 @@ import crypto from "crypto";
 
 import { retrieveKnowledge } from "@/lib/retriever";
 import { buildPrompt } from "@/lib/prompt";
-import { askLLM } from "@/lib/llm";
+import { askLLM } from "@/lib/groqllm";
 import { detectIntent } from "@/lib/intent";
 import { getStaticResponse } from "@/lib/staticResponses";
 import { trackQuestion } from "@/lib/analytics";
