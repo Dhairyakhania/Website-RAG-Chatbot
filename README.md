@@ -1,5 +1,7 @@
 # Kenmark ITan Solutions – AI Chatbot 🤖
 
+[Live Demo Link](https://website-rag-chatbot-kmit.vercel.app/)
+
 An AI-powered virtual assistant built for the official Kenmark ITan Solutions website.  
 The chatbot answers user queries about company services, hosting, development, and FAQs using a Retrieval-Augmented Generation (RAG) approach.
 
