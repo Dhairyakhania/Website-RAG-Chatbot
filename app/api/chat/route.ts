@@ -87,14 +87,32 @@ ${buildPrompt(context, message)}
 `;
 
   /* =========================
-     Call Groq (non-streaming)
+     Stream Groq response
      ========================= */
-  const reply = await askLLM(prompt);
+  const llmStream = await askLLM(prompt);
+  let fullReply = "";
 
-  updateSession(sessionId, { role: "user", content: message });
-  updateSession(sessionId, { role: "assistant", content: reply });
+  const stream = new ReadableStream<string>({
+    async start(controller) {
+      const reader = llmStream.getReader();
 
-  return new Response(reply, {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        if (!value) continue;
+
+        fullReply += value;
+        controller.enqueue(value);
+      }
+
+      updateSession(sessionId, { role: "user", content: message });
+      updateSession(sessionId, { role: "assistant", content: fullReply });
+
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
     headers: {
       "Content-Type": "text/plain",
       "Set-Cookie": `sessionId=${sessionId}; Path=/; HttpOnly`,
