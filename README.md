@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kenmark ITan Solutions – AI Chatbot 🤖
 
-## Getting Started
+An AI-powered virtual assistant built for the official Kenmark ITan Solutions website.  
+The chatbot answers user queries about company services, hosting, development, and FAQs using a Retrieval-Augmented Generation (RAG) approach.
 
-First, run the development server:
+---
 
+## 🚀 Features
+
+### Chatbot (User Side)
+- Floating chat widget with modern UI
+- Streaming AI responses (real-time typing)
+- Session-based conversation memory
+- Intent handling (greetings, thanks, help)
+- Graceful fallback for unknown queries
+- Auto-scroll and typing indicator
+- Dark mode friendly design
+
+### Admin Dashboard
+- Upload Excel knowledge files (.xlsx)
+- View most asked questions (analytics)
+- Visual analytics using charts
+- Knowledge sources: Website + Excel
+- Clean, responsive admin UI
+
+---
+
+## 🧠 Architecture Overview
+
+User → Chat UI → API Route (/api/chat)
+↓
+Intent Detection
+↓
+Knowledge Retrieval (RAG)
+↓
+LLM (Ollama – Local)
+↓
+Streamed Response
+
+## 🛠 Tech Stack
+
+### Frontend
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS v4
+- Chart.js
+
+### Backend
+- Next.js API Routes
+- Session-based memory
+- Analytics tracking
+
+### AI / LLM
+- Ollama (Mistral / LLaMA models)
+- Retrieval-Augmented Generation (RAG)
+
+### Data Sources
+- Website content (static JSON)
+- Excel files (.xlsx)
+
+---
+
+## 📂 Project Structure
+
+app/
+├─ api/
+│ ├─ chat/
+│ └─ admin/
+├─ admin/
+├─ page.tsx
+
+components/
+└─ ChatWidget.tsx
+
+lib/
+├─ retriever.ts
+├─ llm.ts
+├─ analytics.ts
+├─ sessionMemory.ts
+└─ intent.ts
+
+data/
+├─ website/
+└─ knowledge.xlsx
+
+
+---
+
+## ⚙️ Setup Instructions (Local)
+
+### 1️⃣ Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ Install & run Ollama
+```
+ollama run mistral
+```
+Ollama must be running on http://localhost:11434
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3️⃣ Start the app
+```
+npm run dev
+```
+App runs on:
+👉 http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Admin dashboard:
+👉 http://localhost:3000/admin
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## 📊 Admin Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Upload Excel knowledge files
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Monitor most asked questions
 
-## Deploy on Vercel
+- Analytics update in real-time
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Knowledge updates reflected instantly
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🌐 Deployment
+
+- The application is deployed on Vercel.
+
+- Frontend + API routes hosted on Vercel
+
+- LLM inference runs locally via Ollama
+
+For full cloud deployment, Ollama can be replaced with Groq/OpenRouter APIs.
